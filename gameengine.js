@@ -21,6 +21,7 @@ window.requestAnimFrame = (function () {
 // Game Engine has entities
 function GameEngine() {
     this.entities = [];
+    this.boids = [];
     this.enableDebug = false;   // debugging flag for drawing bounding boxes
     this.pauseKey = false;
     this.ctx = null;
@@ -50,6 +51,10 @@ GameEngine.prototype.init = function (ctx) {
 GameEngine.prototype.start = function () {
     console.log("starting game");
     var that = this;
+
+    // Create some boids to start out with
+    // TODO: Init some boids, for loop, create, random locations
+
     (function gameLoop() {
         that.loop();
         requestAnimFrame(gameLoop, that.ctx.canvas);
@@ -102,6 +107,9 @@ GameEngine.prototype.startInput = function () {
     this.ctx.canvas.addEventListener("click", function (e) {
         //console.log(getXandY(e));
         that.click = getXandY(e);
+        var boid = new Boid(that, that.click.x, that.click.y, 20, 20); //TODO: what is width/height of boid???
+        that.addEntity(boid);
+        that.boids.push(boid);
     }, false);
 
     this.ctx.canvas.addEventListener("wheel", function (e) {
@@ -204,30 +212,20 @@ GameEngine.prototype.loop = function () {
     }
 };
 
-/**
- * Create a timer for the game.
- * @constructor
- */
 function Timer() {
     this.gameTime = 0;
     this.maxStep = 0.05;
     this.wallLastTimestamp = 0;
 }
 
-/**
- *
- * @returns {number}
- */
 Timer.prototype.tick = function () {
     var wallCurrent = Date.now(); // Retrieve current time
-    var wallDelta = (wallCurrent - this.wallLastTimestamp) / 1000; // Determine how much time has past, in seconds
+    var wallDelta = (wallCurrent - this.wallLastTimestamp) / 1000;
 
-    // Once figuring out the delta, now update the last time stamp
-    this.wallLastTimestamp = wallCurrent; // Update the previous time to the current
+    this.wallLastTimestamp = wallCurrent;
 
-    // I don't understand game delta
-    var gameDelta = Math.min(wallDelta, this.maxStep); // lockstep
-    this.gameTime += gameDelta; // Update total time passed in game.
+    var gameDelta = Math.min(wallDelta, this.maxStep);
+    this.gameTime += gameDelta;
     //console.log(this.gameTime);
     return gameDelta;
 };

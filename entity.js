@@ -3,16 +3,12 @@ function Entity(game, x, y, width, height) {
     this.game = game;
     this.x = x;
     this.y = y;
-    this.width = width;
-    this.height = height;
     this.removeFromWorld = false;
     this.boundingBox = new BoundingBox(x, y, width, height);
 
 }
 
 Entity.prototype.update = function () {
-    this.centerX = this.x + this.width / 2;
-    this.centerY = this.y + this.height / 2;
 };
 
 // Anything defined here is inherited by all entities (the outline for debugging).
