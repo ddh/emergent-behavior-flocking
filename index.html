@@ -1,14 +1,22 @@
-﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <title>Game Project Shell</title>
+    <script type="text/javascript" src="./entity.js"></script>
+    <script type="text/javascript" src="./background.js"></script>
+    <script type="text/javascript" src="./animation.js"></script>
+    <script type="text/javascript" src="./functions.js"></script>
+    <script type="text/javascript" src="./boid.js"></script>
     <script type="text/javascript" src="./gameengine.js"></script>
     <script type="text/javascript" src="./assetmanager.js"></script>
     <script type="text/javascript" src="./main.js"></script>
 </head>
 <body>
-    <canvas id="gameWorld" tabindex="1" width="720" height="400" style="border: 1px solid brown; background: lightskyblue"></canvas>
+
+<div id="gameWorldContainer" style="width:100%;text-align:center">
+    <canvas id="gameWorld" tabindex="1" width="800" height="600"
+            style="border: 1px solid brown; background: black;"></canvas>
+</div>
 </body>
 </html>

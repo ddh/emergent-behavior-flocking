@@ -1,12 +1,9 @@
 /**
  * Duy Huynh
  * TCSS 491, Winter '16
- * Assignment 1 - Animation
+ * Assignment 2 - Interaction
  * assetmanager.js
  *
- * Asset Manager for game to load assets, images, etcs.
- *
- * Resources: Taken from Chris Marriott's codebase.
  */
 
 function AssetManager() {
