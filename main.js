@@ -9,6 +9,7 @@
  */
 
 ASSET_MANAGER.queueDownload("./img/bg-space.png");
+ASSET_MANAGER.queueDownload("./img/fish.png");
 
 
 ASSET_MANAGER.downloadAll(function () {
@@ -21,6 +22,13 @@ ASSET_MANAGER.downloadAll(function () {
     var bg = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/bg-space.png"), 800, 600);
 
     gameEngine.addEntity(bg);
+
+    for (var i = 0; i < 20; i++) {
+        var boid = new Boid(gameEngine, Math.random() * 800, Math.random() * 600, 2);
+        gameEngine.addEntity(boid);
+        gameEngine.boids.push(boid);
+
+    }
 
     gameEngine.init(ctx);
     gameEngine.start();

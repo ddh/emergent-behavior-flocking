@@ -107,7 +107,7 @@ GameEngine.prototype.startInput = function () {
     this.ctx.canvas.addEventListener("click", function (e) {
         //console.log(getXandY(e));
         that.click = getXandY(e);
-        var boid = new Boid(that, that.click.x, that.click.y, 20, 20); //TODO: what is width/height of boid???
+        var boid = new Boid(that, that.click.x, that.click.y, 2); //TODO: what is width/height of boid???
         that.addEntity(boid);
         that.boids.push(boid);
     }, false);
@@ -133,7 +133,7 @@ GameEngine.prototype.startInput = function () {
  * @param entity
  */
 GameEngine.prototype.addEntity = function (entity) {
-    console.log('added entity');
+    console.log('added ' + entity);
     this.entities.push(entity);
 };
 
