@@ -9,8 +9,6 @@ var MAX_SPEED = 2;
 var MAX_STEER = 0.05;
 
 function Boid(game, x, y, radius) {
-    this.game = game;
-    this.ctx = game.ctx;
     this.image = ASSET_MANAGER.getAsset("./img/fish.png");
 
     // Boid properties
@@ -39,7 +37,7 @@ Boid.prototype.constructor = Boid;
 
 Boid.prototype.update = function () {
     // First apply flocking algorithms' forces to this boid
-    this.applyFlockingRules(this.game.boids);
+    this.applyFlockingRules(boids);
 
     // Then update velocity
     this.velocity.add(this.acceleration);
@@ -62,10 +60,10 @@ Boid.prototype.update = function () {
     this.acceleration.multiplyScalar(0);
 
     // Check for border wrap-arounds
-    if (this.position.x < -this.radius) this.position.x = this.game.surfaceWidth + this.radius;
-    if (this.position.y < -this.radius) this.position.y = this.game.surfaceHeight + this.radius;
-    if (this.position.x > this.game.surfaceWidth + this.radius) this.position.x = -this.radius;
-    if (this.position.y > this.game.surfaceHeight + this.radius) this.position.y = -this.radius;
+    if (this.position.x < -this.radius) this.position.x = SURFACE_WIDTH + this.radius;
+    if (this.position.y < -this.radius) this.position.y = SURFACE_HEIGHT + this.radius;
+    if (this.position.x > SURFACE_WIDTH + this.radius) this.position.x = -this.radius;
+    if (this.position.y > SURFACE_HEIGHT + this.radius) this.position.y = -this.radius;
 
     Entity.prototype.update.call(this);
 

@@ -25,7 +25,7 @@ AssetManager.prototype.downloadAll = function (callback) {
         img.addEventListener("load", function () {
             console.log("Loaded " + this.src);
             that.successCount++;
-            if(that.isDone()) callback();
+            if (that.isDone()) callback();
         });
 
         img.addEventListener("error", function () {

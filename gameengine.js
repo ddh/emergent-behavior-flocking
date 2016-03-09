@@ -6,6 +6,11 @@
  *
  */
 
+var boids = []; // Making this a 'global variable' for saving
+var gameEngine; // Need to make this a global to access it elsewhere, like in calling save/load Socket.io
+var SURFACE_WIDTH = 800;
+var SURFACE_HEIGHT = 600;
+
 // Defaulting to browser specific calls to animation frame to future proof:
 window.requestAnimFrame = (function () {
     return window.requestAnimationFrame ||
@@ -20,8 +25,8 @@ window.requestAnimFrame = (function () {
 
 // Game Engine has entities
 function GameEngine() {
+    gameEngine = this;
     this.entities = [];
-    this.boids = [];
     this.enableDebug = false;   // debugging flag for drawing bounding boxes
     this.pauseKey = false;
     this.ctx = null;
@@ -109,7 +114,7 @@ GameEngine.prototype.startInput = function () {
         that.click = getXandY(e);
         var boid = new Boid(that, that.click.x + Math.floor(Math.random() * 100) - 50, that.click.y + Math.floor(Math.random() * 100) - 50, 10);
         that.addEntity(boid);
-        that.boids.push(boid);
+        boids.push(boid);
     }, false);
 
     this.ctx.canvas.addEventListener("wheel", function (e) {
