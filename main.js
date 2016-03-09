@@ -23,7 +23,7 @@ ASSET_MANAGER.downloadAll(function () {
     //gameEngine.addEntity(bg);
 
     for (var i = 0; i < 100; i++) {
-        var boid = new Boid(gameEngine, Math.random() * 800, Math.random() * 600, 10);
+        var boid = new Boid(gameEngine, Math.random() * 800, Math.random() * 600, 2);
         gameEngine.addEntity(boid);
         gameEngine.boids.push(boid);
 
