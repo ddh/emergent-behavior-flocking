@@ -1,0 +1,27 @@
+div{
+    color: #fff;
+    font-family: Tahoma, Verdana, Segoe, sans-serif;
+}
+.container{
+    background-color:#2E4272;
+    display:flex;
+}
+.fixed{
+    background-color:#4F628E;
+    width: 800px;
+}
+.flex-item {
+    padding-top: 10px;
+    padding-left: 10px;
+    background-color: #7887AB;
+    flex-grow: 1;
+}
+
+td {
+    width: 150px;
+}
+
+.rangeslider,
+input[type='range'] {
+    max-width: 400px;
+}

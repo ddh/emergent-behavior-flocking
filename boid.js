@@ -1,12 +1,12 @@
 // For randomizing vectors
 var SEPARATION_MULTIPLIER = 1.5;
-var ALIGNMENT_MULTIPLIER = 1.0;
-var COHESION_MULTIPLIER = 1.0;
-var MIN_SEPARATION = 25;        // Minimum distance boids are from each other
-var NEIGHBOR_DISTANCE = 50;
+var ALIGNMENT_MULTIPLIER = 0.5;
+var COHESION_MULTIPLIER = 0.5;
+var SEPARATION_DISTANCE = 25;        // Minimum distance boids are from each other
+var ALIGNMENT_DISTANCE = 50;
 var COHESION_DISTANCE = 50;
 var MAX_SPEED = 2;
-var MAX_STEER = 0.03;
+var MAX_STEER = 0.05;
 
 function Boid(game, x, y, radius) {
     this.game = game;
@@ -23,6 +23,11 @@ function Boid(game, x, y, radius) {
     this.position = new Victor(this.x, this.y);
     this.velocity = new Victor(Math.cos(this.angle), Math.sin(this.angle));
     this.acceleration = new Victor(0, 0);
+
+    // Craig Reynold's flocking algorithm
+    this.separationVector = new Victor(0, 0);
+    this.alignmentVector = new Victor(0, 0);
+    this.cohesionVector = new Victor(0, 0);
 
     Entity.call(this, game, 0, this.y, this.width, this.height);
 
@@ -65,7 +70,10 @@ Boid.prototype.update = function () {
 
 Boid.prototype.draw = function (ctx) {
 
-    //ctx.drawImage(ASSET_MANAGER.getAsset("./img/fish.png"), this.position.x, this.position.y, 50, 50);
+    // ctx.drawImage(ASSET_MANAGER.getAsset("./img/fish.png"), this.position.x, this.position.y, 50, 50);
+
+    // TODO: Draw arrows representing separation, alignment, cohesion vectors
+
     Entity.prototype.draw.call(this, ctx);
 
 };
@@ -73,19 +81,19 @@ Boid.prototype.draw = function (ctx) {
 Boid.prototype.applyFlockingRules = function (boids) {
 
     // Obtain the three components of Craig Reynold's flocking algorithm:
-    var separation = this.separate(boids);
-    var alignment = this.align(boids);
-    var cohesion = this.cohesion(boids);
+    this.separationVector = this.separate(boids);
+    this.alignmentVector = this.align(boids);
+    this.cohesionVector = this.cohesion(boids);
 
     // Give a weight to the forces
-    separation.multiplyScalar(SEPARATION_MULTIPLIER);
-    alignment.multiplyScalar(ALIGNMENT_MULTIPLIER);
-    cohesion.multiplyScalar(COHESION_MULTIPLIER);
+    this.separationVector.multiplyScalar(SEPARATION_MULTIPLIER);
+    this.alignmentVector.multiplyScalar(ALIGNMENT_MULTIPLIER);
+    this.cohesionVector.multiplyScalar(COHESION_MULTIPLIER);
 
     // Apply these forces to this boid's acceleration
-    this.acceleration.add(separation);
-    this.acceleration.add(alignment);
-    this.acceleration.add(cohesion);
+    this.acceleration.add(this.separationVector);
+    this.acceleration.add(this.alignmentVector);
+    this.acceleration.add(this.separationVector);
 
 };
 
@@ -97,28 +105,35 @@ Boid.prototype.separate = function (boids) {
     // For each boid, check
     for (var i = 0, len = boids.length; i < len; i++) {
 
-        // Euclidean distance between this boid and other
-        var distance = this.position.distance(boids[i].position);
+        if (this != boids[i]) { // Ignore self
 
-        // Ignore comparing to self and only consider boids that are too close
-        if (this != boids[i] && distance < MIN_SEPARATION) {
+            // Euclidean distance between this boid and other
+            var distance = this.position.distance(boids[i].position);
 
-            // Find vector pointing away from other boid
-            var oppositeDir = this.position.clone().subtract(boids[i].position);
+            // Ignore comparing to self and only consider boids that are too close
+            if (distance < SEPARATION_DISTANCE) {
 
-            // Normalize the vector
-            oppositeDir.normalize();
-            oppositeDir.divideScalar(distance);
+                // Find vector pointing away from other boid
+                var oppositeDir = this.position.clone(); // Clone this boid's position
+                oppositeDir = oppositeDir.subtract(boids[i].position);
 
-            // Add this steer to overall steering vector
-            steer.add(oppositeDir);
+                // Normalize the vector
+                oppositeDir.normalize();
+                oppositeDir.divideScalar(distance);
 
-            // Increase the number of boids that are too close
-            neighbors++;
+                // Add this steer to overall steering vector
+                //steer.add(oppositeDir); // TODO: Not sure if this add works
+                steer.x += oppositeDir.x;
+                steer.y += oppositeDir.y;
+
+                // Increase the number of boids that are too close
+                neighbors++;
+            }
         }
 
+
         // Average the steering vector by number of nearby boids
-        if (neighbors > 0) steer.divideScalar(neighbors);
+        if (neighbors > 0) steer.divide(neighbors);
 
         // If magnitude is great than 0,
         if (steer.magnitude > 0) {
@@ -144,12 +159,14 @@ Boid.prototype.align = function (boids) {
 
     // Calculate average velocity of nearby boids
     for (var i = 0, len = boids.length; i < len; i++) {
-        // Euclidean distance between this boid and other
-        var distance = this.position.distance(boids[i].position);
-        // Ignore comparing to self and only consider boids that are too close
-        if (this != boids[i] && distance < NEIGHBOR_DISTANCE) {
-            steer.add(boids[i].velocity);
-            neighbors++;
+        if (this != boids[i]) { // Ignore self
+            // Euclidean distance between this boid and other
+            var distance = this.position.distance(boids[i].position);
+            // Ignore comparing to self and only consider boids that are too close
+            if (distance < ALIGNMENT_DISTANCE) {
+                steer.add(boids[i].velocity);
+                neighbors++;
+            }
         }
     }
 
@@ -174,15 +191,17 @@ Boid.prototype.cohesion = function (boids) {
 
     // Calculate average velocity of nearby boids
     for (var i = 0, len = boids.length; i < len; i++) {
-        // Euclidean distance between this boid and other
-        var distance = this.position.distance(boids[i].position);
-        // Ignore comparing to self and only consider boids that are 'neighbors'
-        if (this != boids[i] && distance < COHESION_DISTANCE) {
-            steer.add(boids[i].position);
-            neighbors++;
+        if (this != boids[i]) { // Ignore self
+            // Euclidean distance between this boid and other
+            var distance = this.position.distance(boids[i].position);
+            // Ignore comparing to self and only consider boids that are 'neighbors'
+            if (distance < COHESION_DISTANCE) {
+                steer.add(boids[i].position);
+                neighbors++;
+            }
         }
-
     }
+
     if (neighbors > 0) {
         steer.divideScalar(neighbors);
         return this.steer(steer);

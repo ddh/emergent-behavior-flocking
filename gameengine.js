@@ -107,7 +107,7 @@ GameEngine.prototype.startInput = function () {
     this.ctx.canvas.addEventListener("click", function (e) {
         //console.log(getXandY(e));
         that.click = getXandY(e);
-        var boid = new Boid(that, that.click.x, that.click.y, 2); //TODO: what is width/height of boid???
+        var boid = new Boid(that, that.click.x + Math.floor(Math.random() * 100) - 50, that.click.y + Math.floor(Math.random() * 100) - 50, 10);
         that.addEntity(boid);
         that.boids.push(boid);
     }, false);

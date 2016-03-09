@@ -13,7 +13,7 @@ Entity.prototype.update = function () {
 // Anything defined here is inherited by all entities (the outline for debugging).
 Entity.prototype.draw = function (ctx) {
 
-    ctx.drawImage(this.rotateAndCache(this.image, this.velocity.angle()), this.x, this.y, 50, 50);
+    ctx.drawImage(this.rotateAndCache(this.image, this.velocity.angle()), this.x, this.y, 20, 20);
 
     // Show debug circles only for entities that have a radius
     if (this.game.enableDebug && this.radius) {
