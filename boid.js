@@ -47,6 +47,9 @@ Boid.prototype.update = function () {
     // Cap speeds at defined limit
     if (this.velocity.x > MAX_SPEED) this.velocity.x = MAX_SPEED;
     if (this.velocity.y > MAX_SPEED) this.velocity.y = MAX_SPEED;
+    if (this.velocity.x < -MAX_SPEED) this.velocity.x = -MAX_SPEED;
+    if (this.velocity.y < -MAX_SPEED) this.velocity.y = -MAX_SPEED;
+
 
     // Update boid's position
     this.position.add(this.velocity);
@@ -118,8 +121,10 @@ Boid.prototype.separate = function (boids) {
                 oppositeDir = oppositeDir.subtract(boids[i].position);
 
                 // Normalize the vector
-                oppositeDir.normalize();
-                oppositeDir.divideScalar(distance);
+                oppositeDir.normalize();    // TODO: Normalize i think works
+                oppositeDir.x /= distance;
+                oppositeDir.y /= distance;
+                //oppositeDir.divideScalar(distance); // TODO: Not sure if this is the right function call
 
                 // Add this steer to overall steering vector
                 //steer.add(oppositeDir); // TODO: Not sure if this add works
@@ -133,10 +138,13 @@ Boid.prototype.separate = function (boids) {
 
 
         // Average the steering vector by number of nearby boids
-        if (neighbors > 0) steer.divide(neighbors);
+        if (neighbors > 0) {
+            steer.x /= neighbors;
+            steer.y /= neighbors;
+        }
 
         // If magnitude is great than 0,
-        if (steer.magnitude > 0) {
+        if (steer.magnitude() > 0) {
             steer.normalize();
             steer.multiplyScalar(MAX_SPEED);
             steer.subtract(this.velocity);
@@ -144,8 +152,10 @@ Boid.prototype.separate = function (boids) {
             // Cap speeds at defined limit
             if (steer.x > MAX_STEER) steer.x = MAX_STEER;
             if (steer.y > MAX_STEER) steer.y = MAX_STEER;
+            if (steer.x < -MAX_STEER) steer.x = -MAX_STEER;
+            if (steer.y < -MAX_STEER)steer.y = -MAX_STEER;
         }
-
+        //console.log(steer.toString());
         return steer;
 
     }
@@ -205,13 +215,17 @@ Boid.prototype.cohesion = function (boids) {
     if (neighbors > 0) {
         steer.divideScalar(neighbors);
         return this.steer(steer);
-    } else return new Victor(0, 0)
+    } else {
+        return new Victor(0, 0);
+    }
 };
 
 // Calculate and apply steering force towards the target vector
 Boid.prototype.steer = function (vector) {
 
-    var destination = vector.subtract(this.position);
+    //console.log(vector.toString());
+    var destination = vector.clone();
+    destination.subtract(this.position);
     destination.normalize();
     destination.multiplyScalar(MAX_SPEED);
 
@@ -219,6 +233,8 @@ Boid.prototype.steer = function (vector) {
     // Cap speeds at defined limit
     if (steer.x > MAX_STEER) steer.x = MAX_STEER;
     if (steer.y > MAX_STEER) steer.y = MAX_STEER;
+    if (steer.x < -MAX_STEER)steer.x = -MAX_STEER;
+    if (steer.y < -MAX_STEER)steer.y = -MAX_STEER;
     return steer;
 };
 
