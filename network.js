@@ -1,5 +1,5 @@
 // Socket to connect to Chris's server
-var socket = io.connect("http://76.28.150.193:8888");
+var socket = io.connect("http://xx.xx.xxx.xxx:xxxx");
 
 // Function to load data from Chris's server
 var loadNetworkData = function () {

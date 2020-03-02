@@ -28,8 +28,8 @@ ASSET_MANAGER.downloadAll(function () {
     gameEngine.init(ctx);
     gameEngine.start();
 
-    socket.on("ping", function (ping) {
-        console.log(ping);
-        socket.emit("pong");
-    });
+    // socket.on("ping", function (ping) {
+    //     console.log(ping);
+    //     socket.emit("pong");
+    // });
 });

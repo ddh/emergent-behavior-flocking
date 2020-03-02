@@ -1,9 +1,0 @@
-1. (OPtional) find a sprite sheet you like.
-2. Use Alfred Sprite unpacker to individually select which sprites you'd like to keep
-	- This exports each picked sprite as an individual png file
-3. Then use photoshop to open each of these png files into their own layers:
-	- DO this by using File>Script>Load stack
-4. Adjust each layer for alignment, and make any other tweaks
-5. Use the script found on the tutorial: http://www.williammalone.com/articles/html5-animation-sprite-sheet-photoshop/
-	- File>Script>Create SPrite SHeet From Layers
-6. Save the resulting png sprite sheet
